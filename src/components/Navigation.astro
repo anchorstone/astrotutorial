@@ -1,6 +1,244 @@
-<div id="main-menu" class="nav-links">
-  <a href="/">Startseite</a>
-  <a href="/about/">Über mich</a>
-  <a href="/blog/">Blog</a>
-  <a href="/tags/">Tags</a>
-</div>
+---
+// src/components/Navigation.astro
+
+import "../styles/global.css";
+
+interface Props {
+  logoSrc?: string;
+  logoAlt?: string;
+  siteName?: string;
+  tagline?: string;
+}
+
+const {
+  logoSrc = "/logo.svg",
+  logoAlt = "Logo",
+  siteName = "Dein Name",
+  tagline = "Kurzer Untertitel",
+} = Astro.props;
+
+// Navigationslinks (rechts)
+const links = [
+  { label: "Start", href: "/" },
+  { label: "Über uns", href: "/ueber-uns" },
+  { label: "Leistungen", href: "/leistungen" },
+  { label: "Kontakt", href: "/kontakt" },
+];
+
+// Social Icons (Mitte) – Links hier anpassen
+const socials = [
+  {
+    label: "Facebook",
+    href: "https://facebook.com/deinprofil",
+    icon: "facebook",
+    external: true,
+  },
+  {
+    label: "Instagram",
+    href: "https://instagram.com/deinprofil",
+    icon: "instagram",
+    external: true,
+  },
+  {
+    label: "WhatsApp",
+    href: "https://wa.me/491234567890", // Nummer im internationalen Format, ohne + und Leerzeichen
+    icon: "whatsapp",
+    external: true,
+  },
+  {
+    label: "E-Mail",
+    href: "mailto:info@example.com",
+    icon: "mail",
+    external: false,
+  },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) => currentPath === (href.replace(/\/$/, "") || "/");
+
+
+---
+
+<header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
+  <nav
+    aria-label="Hauptnavigation"
+    class="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-4 px-4 py-3 sm:px-6 lg:grid-cols-[1fr_auto_1fr] lg:px-8"
+  >
+    <!-- Links: Logo + Text -->
+    <a href="/" class="flex items-center gap-3 justify-self-start">
+      <img src={logoSrc} alt={logoAlt} class="h-10 w-10 shrink-0 object-contain" />
+      <span class="flex flex-col leading-tight">
+        <span class="text-base font-semibold text-slate-900">{siteName}</span>
+        <span class="text-xs text-slate-500">{tagline}</span>
+      </span>
+    </a>
+
+    <!-- Mitte: Social Icons (nur Desktop) -->
+    <ul class="hidden items-center gap-1 lg:flex">
+      {
+        socials.map((s) => (
+          <li>
+            <a
+              href={s.href}
+              aria-label={s.label}
+              target={s.external ? "_blank" : undefined}
+              rel={s.external ? "noopener noreferrer" : undefined}
+              class="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+            >
+              {s.icon === "facebook" && (
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                </svg>
+              )}
+              {s.icon === "instagram" && (
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                </svg>
+              )}
+              {s.icon === "whatsapp" && (
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                  <g transform="translate(6.5 5.5) scale(0.5)">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </g>
+                </svg>
+              )}
+              {s.icon === "mail" && (
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              )}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- Rechts: Links (nur Desktop) -->
+    <ul class="hidden items-center gap-1 justify-self-end lg:flex">
+      {
+        links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              aria-current={isActive(l.href) ? "page" : undefined}
+              class:list={[
+                "rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900",
+                isActive(l.href)
+                  ? "bg-slate-100 text-slate-900"
+                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+              ]}
+            >
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- Mobile: Menü-Button -->
+    <button
+      id="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Menü öffnen"
+      class="flex h-10 w-10 items-center justify-center justify-self-end rounded-md text-slate-700 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 lg:hidden"
+    >
+      <svg id="icon-open" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="4" y1="7" x2="20" y2="7" />
+        <line x1="4" y1="12" x2="20" y2="12" />
+        <line x1="4" y1="17" x2="20" y2="17" />
+      </svg>
+      <svg id="icon-close" viewBox="0 0 24 24" class="hidden h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="6" y1="6" x2="18" y2="18" />
+        <line x1="18" y1="6" x2="6" y2="18" />
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile-Menü -->
+  <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white lg:hidden">
+    <ul class="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3 sm:px-6">
+      {
+        links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              aria-current={isActive(l.href) ? "page" : undefined}
+              class:list={[
+                "block rounded-md px-3 py-2 text-base font-medium",
+                isActive(l.href)
+                  ? "bg-slate-100 text-slate-900"
+                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+              ]}
+            >
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <ul class="mx-auto flex max-w-7xl items-center gap-2 border-t border-slate-100 px-4 py-3 sm:px-6">
+      {
+        socials.map((s) => (
+          <li>
+            <a
+              href={s.href}
+              aria-label={s.label}
+              target={s.external ? "_blank" : undefined}
+              rel={s.external ? "noopener noreferrer" : undefined}
+              class="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+            >
+              {s.icon === "facebook" && (
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                </svg>
+              )}
+              {s.icon === "instagram" && (
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                </svg>
+              )}
+              {s.icon === "whatsapp" && (
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                  <g transform="translate(6.5 5.5) scale(0.5)">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </g>
+                </svg>
+              )}
+              {s.icon === "mail" && (
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              )}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById("nav-toggle");
+  const menu = document.getElementById("mobile-menu");
+  const iconOpen = document.getElementById("icon-open");
+  const iconClose = document.getElementById("icon-close");
+
+  toggle?.addEventListener("click", () => {
+    const open = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!open));
+    toggle.setAttribute("aria-label", open ? "Menü öffnen" : "Menü schließen");
+    menu?.classList.toggle("hidden", open);
+    iconOpen?.classList.toggle("hidden", !open);
+    iconClose?.classList.toggle("hidden", open);
+  });
+</script>
