@@ -11,18 +11,17 @@ interface Props {
 }
 
 const {
-  logoSrc = "/logo.svg",
+  logoSrc = "/logo50x50.png",
   logoAlt = "Logo",
-  siteName = "Dein Name",
-  tagline = "Kurzer Untertitel",
+  siteName = "Markus Ankerstein",
 } = Astro.props;
 
 // Navigationslinks (rechts)
 const links = [
   { label: "Start", href: "/" },
-  { label: "Über uns", href: "/ueber-uns" },
-  { label: "Leistungen", href: "/leistungen" },
-  { label: "Kontakt", href: "/kontakt" },
+  { label: "Blog", href: "/blog" },
+  { label: "Über mich", href: "/about" },
+  { label: "Tags", href: "/tags" },
 ];
 
 // Social Icons (Mitte) – Links hier anpassen
@@ -41,13 +40,13 @@ const socials = [
   },
   {
     label: "WhatsApp",
-    href: "https://wa.me/491234567890", // Nummer im internationalen Format, ohne + und Leerzeichen
+    href: "https://wa.me/4917662610743", // Nummer im internationalen Format, ohne + und Leerzeichen
     icon: "whatsapp",
     external: true,
   },
   {
     label: "E-Mail",
-    href: "mailto:info@example.com",
+    href: "mailto:ankerstein@gmail.com",
     icon: "mail",
     external: false,
   },
@@ -56,20 +55,18 @@ const socials = [
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isActive = (href: string) => currentPath === (href.replace(/\/$/, "") || "/");
 
-
 ---
 
 <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
   <nav
     aria-label="Hauptnavigation"
-    class="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-4 px-4 py-3 sm:px-6 lg:grid-cols-[1fr_auto_1fr] lg:px-8"
+    class="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-4 mt-2 px-4 py-3 sm:px-6 lg:grid-cols-[1fr_auto_1fr] lg:px-8"
   >
     <!-- Links: Logo + Text -->
     <a href="/" class="flex items-center gap-3 justify-self-start">
       <img src={logoSrc} alt={logoAlt} class="h-10 w-10 shrink-0 object-contain" />
       <span class="flex flex-col leading-tight">
-        <span class="text-base font-semibold text-slate-900">{siteName}</span>
-        <span class="text-xs text-slate-500">{tagline}</span>
+        <span class="ml-2 font-semibold text-lg text-slate-900">{siteName}</span>
       </span>
     </a>
 
