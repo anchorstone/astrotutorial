@@ -1,24 +1,16 @@
 @import "tailwindcss";
 
-html {
-  background-color: #f1f5f9;
-  font-family: sans-serif;
+@theme {
+  --font-opensans: "Open Sans", sans-serif;
+  --font-bebas: "Bebas Neue", sans-serif;
+  --font-manrope: "Manrope", sans-serif;
+  --font-plusjakarta: "Plus Jakarta Sans", sans-serif;
+  --font-inter: "Inter", sans-serif;
+
+  
 }
 
-body {
-  margin: 0 auto;
-  width: 100%;
-  max-width: 130ch;
-  padding: 1rem;
-  line-height: 1.5;
-}
 
-* {
-  box-sizing: border-box;
-}
 
-h1 {
-  margin: 1rem 0;
-  font-size: 2.5rem;
-}
+
 

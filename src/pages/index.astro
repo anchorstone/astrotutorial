@@ -1,7 +1,18 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ImageFeature from "../components/ImageFeature.astro";
 const pageTitle = "Startseite";
 ---
-<BaseLayout pageTitle={pageTitle}>
-  <h2>Mein großartiger Blog-Untertitel</h2>
+
+<BaseLayout>
+  <ImageFeature
+    mainImage="src/images/heromoselstadion.jpg"
+    topImage="src/images/herooben.jpg"
+    bottomImage="src/images/herounten.jpg"
+    title="Website & Blog"
+    description="von Markus Ankerstein"
+    buttonText="weiterlesen ..."
+    buttonHref="/about"
+    alt="Blick auf die Landschaft"
+  />
 </BaseLayout>
