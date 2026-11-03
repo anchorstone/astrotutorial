@@ -1,16 +1,292 @@
 ---
-import Social from './Social.astro';
----
-<style>
-  footer {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-</style>
+/**
+ * Footer.astro – Astro + Tailwind CSS
+ * Komplett eigenständig: Inline-SVGs, keine Icon-Bibliothek nötig.
+ * Alle Texte und Links sind per Props anpassbar.
+ */
 
-<footer>
-  <Social platform="twitter" username="astrodotbuild" />
-  <Social platform="github" username="withastro" />
-  <Social platform="youtube" username="astrodotbuild" />
+type SocialName = 'facebook' | 'instagram' | 'whatsapp' | 'linkedin' | 'youtube';
+
+interface LinkItem {
+  label: string;
+  href: string;
+}
+
+interface SocialItem {
+  name: SocialName;
+  href: string;
+  label?: string;
+}
+
+interface Props {
+  brand?: string;
+  tagline?: string;
+  navLinks?: LinkItem[];
+  serviceLinks?: LinkItem[];
+  legalLinks?: LinkItem[];
+  socials?: SocialItem[];
+  contact?: {
+    street?: string;
+    city?: string;
+    phone?: string;
+    email?: string;
+    hours?: string;
+  };
+}
+
+const {
+  brand = 'Deine Marke',
+  tagline = 'Kurz und klar sagen, was ihr macht und für wen.',
+  navLinks = [
+    { label: 'Startseite', href: '/' },
+    { label: 'Leistungen', href: '/leistungen' },
+    { label: 'Über uns', href: '/ueber-uns' },
+    { label: 'Blog', href: '/blog' },
+  ],
+  serviceLinks = [
+    { label: 'Preise', href: '/preise' },
+    { label: 'Häufige Fragen', href: '/faq' },
+    { label: 'Downloads', href: '/downloads' },
+    { label: 'Karriere', href: '/karriere' },
+  ],
+  legalLinks = [
+    { label: 'Impressum', href: '/impressum' },
+    { label: 'Datenschutz', href: '/datenschutz' },
+    { label: 'AGB', href: '/agb' },
+  ],
+  socials = [
+    { name: 'facebook', href: 'https://facebook.com/' },
+    { name: 'instagram', href: 'https://instagram.com/' },
+    { name: 'whatsapp', href: 'https://wa.me/' },
+    { name: 'linkedin', href: 'https://linkedin.com/' },
+    { name: 'youtube', href: 'https://youtube.com/' },
+  ],
+  contact = {
+    street: 'Musterstraße 12',
+    city: '54439 Saarburg',
+    phone: '+49 6581 123456',
+    email: 'hallo@example.de',
+    hours: 'Mo–Fr, 9–17 Uhr',
+  },
+} = Astro.props;
+
+const year = new Date().getFullYear();
+
+// Linien-Icons (24×24, stroke = currentColor)
+const icons: Record<string, string> = {
+  facebook: '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>',
+  instagram:
+    '<rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>',
+  whatsapp: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  linkedin:
+    '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>',
+  youtube:
+    '<path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/>',
+  mail: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  phone:
+    '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
+  pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  up: '<path d="m18 15-6-6-6 6"/>',
+};
+
+const socialLabels: Record<SocialName, string> = {
+  facebook: 'Facebook',
+  instagram: 'Instagram',
+  whatsapp: 'WhatsApp',
+  linkedin: 'LinkedIn',
+  youtube: 'YouTube',
+};
+
+const phoneHref = contact.phone ? `tel:${contact.phone.replace(/[^+\d]/g, '')}` : undefined;
+
+const linkClass =
+  'text-slate-300 transition-colors hover:text-amber-300 focus-visible:text-amber-300 focus-visible:outline-none focus-visible:underline underline-offset-4';
+---
+
+<footer class="bg-slate-900 text-slate-300" aria-labelledby="footer-heading">
+  <h2 id="footer-heading" class="sr-only">Fußbereich</h2>
+
+  <div class="mx-auto max-w-7xl px-6 pt-16 pb-8 lg:px-8">
+    <div class="grid gap-12 lg:grid-cols-12">
+      <!-- Marke + Social -->
+      <div class="lg:col-span-4">
+        <a
+          href="/"
+          class="text-2xl font-semibold tracking-tight text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-300"
+        >
+          {brand}
+        </a>
+        <p class="mt-4 max-w-sm leading-relaxed text-slate-400">{tagline}</p>
+
+        <ul class="mt-8 flex flex-wrap gap-3" role="list">
+          {
+            socials.map((s) => (
+              <li>
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label ?? socialLabels[s.name]}
+                  class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-800 text-slate-300 ring-1 ring-slate-700 transition hover:-translate-y-0.5 hover:bg-amber-300 hover:text-slate-900 hover:ring-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-5 w-5"
+                    aria-hidden="true"
+                    set:html={icons[s.name]}
+                  />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Link-Spalten -->
+      <nav class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-8" aria-label="Fußnavigation">
+        <div>
+          <h3 class="text-sm font-semibold text-white">Seiten</h3>
+          <ul class="mt-4 space-y-3" role="list">
+            {navLinks.map((l) => <li><a href={l.href} class={linkClass}>{l.label}</a></li>)}
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-semibold text-white">Service</h3>
+          <ul class="mt-4 space-y-3" role="list">
+            {serviceLinks.map((l) => <li><a href={l.href} class={linkClass}>{l.label}</a></li>)}
+          </ul>
+        </div>
+
+        <!-- Kontakt -->
+        <div class="col-span-2 sm:col-span-1">
+          <h3 class="text-sm font-semibold text-white">Kontakt</h3>
+          <address class="mt-4 space-y-3 not-italic">
+            {
+              (contact.street || contact.city) && (
+                <p class="flex items-start gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="mt-0.5 h-5 w-5 shrink-0 text-amber-300"
+                    aria-hidden="true"
+                    set:html={icons.pin}
+                  />
+                  <span>
+                    {contact.street}
+                    <br />
+                    {contact.city}
+                  </span>
+                </p>
+              )
+            }
+            {
+              contact.phone && (
+                <p class="flex items-center gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-5 w-5 shrink-0 text-amber-300"
+                    aria-hidden="true"
+                    set:html={icons.phone}
+                  />
+                  <a href={phoneHref} class={linkClass}>
+                    {contact.phone}
+                  </a>
+                </p>
+              )
+            }
+            {
+              contact.email && (
+                <p class="flex items-center gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-5 w-5 shrink-0 text-amber-300"
+                    aria-hidden="true"
+                    set:html={icons.mail}
+                  />
+                  <a href={`mailto:${contact.email}`} class={linkClass}>
+                    {contact.email}
+                  </a>
+                </p>
+              )
+            }
+            {
+              contact.hours && (
+                <p class="flex items-center gap-3 text-slate-400">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-5 w-5 shrink-0 text-amber-300"
+                    aria-hidden="true"
+                    set:html={icons.clock}
+                  />
+                  {contact.hours}
+                </p>
+              )
+            }
+          </address>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Untere Leiste -->
+    <div
+      class="mt-14 flex flex-col gap-6 border-t border-slate-800 pt-8 text-sm sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p class="text-slate-400">© {year} {brand}. Alle Rechte vorbehalten.</p>
+
+      <ul class="flex flex-wrap items-center gap-x-6 gap-y-2" role="list">
+        {legalLinks.map((l) => <li><a href={l.href} class={linkClass}>{l.label}</a></li>)}
+        <li>
+          <a
+            href="#top"
+            class="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-slate-300 ring-1 ring-slate-700 transition hover:bg-slate-800 hover:text-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
+          >
+            Nach oben
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-4 w-4"
+              aria-hidden="true"
+              set:html={icons.up}
+            />
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </footer>

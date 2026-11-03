@@ -22,17 +22,17 @@ const {
 } = Astro.props;
 ---
 
-<section class="xl:px-18 grid grid-cols-1 gap-6 md:h-100 md:grid-cols-3">
+<section class="lg:px-18 lg:mb-10 lg:mt-6 grid grid-cols-1 gap-6 md:h-100 md:grid-cols-3">
   <div class="relative h-100 overflow-hidden md:col-span-2">
     <img
       src={mainImage}
       alt={alt}
       class="absolute inset-0 h-full w-full object-cover"
     />
-    <div class="absolute inset-0 bg-black/35"></div>
+    <div class="absolute inset-0 bg-black/25"></div>
 
     <div class="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white">
-      <h2 class="max-w-2xl text-2xl font-bold font-manrope tracking-tight md:text-[2.2rem]">
+      <h2 class="max-w-2xl text-2xl tracking-[0.3rem] font-bold font-manrope md:text-[2.2rem]">
         {title}
       </h2>
 
@@ -50,7 +50,7 @@ const {
   </div>
 
   <div class="grid grid-rows-2 gap-6 md:h-100">
-    <img src={topImage} alt="" class="h-100 w-full object-cover md:h-full rotate-2" />
+    <img src={topImage} alt="" class="h-100 w-full object-cover md:h-full -rotate-2" />
     <img src={bottomImage} alt="" class="h-100 w-full object-cover md:h-full" />
   </div>
 </section>
