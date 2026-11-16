@@ -1,0 +1,63 @@
+---
+// src/components/SplitHero.astro
+interface Props {
+  headline: string;
+  headline2: string;
+  headline3: string;
+  imageSrc: string;
+  imageAlt?: string;
+}
+
+const { headline, headline2, headline3, imageSrc, imageAlt = "" } = Astro.props;
+
+import SocialBar from "../components/SocialBar.astro";
+---
+
+<section class="mx-auto max-w-7xl px-20 py-16 lg:py-16">
+  <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-3 lg:gap-16">
+    <!-- Linke Seite: 2/3 -->
+    <div class="lg:col-span-2">
+      <h1
+        class="px-8 text-5xl text-center font-extrabold font-bebas leading-tight tracking-wider sm:text-6xl lg:text-7xl
+        xl:text-[5rem] underline decoration-3 underline-offset-30 decoration-gray-800"
+      >
+        {headline}
+      </h1>
+      <h1
+        class="px-8 pt-6 text-5xl text-center font-extrabold font-bebas leading-none tracking-wider sm:text-6xl lg:text-7xl
+        xl:text-[3rem]"
+      >
+        {headline2}
+      </h1>
+      <h1
+        class="px-8 text-5xl text-center font-extrabold font-bebas leading-none tracking-wider sm:text-6xl lg:text-7xl
+        xl:text-[3rem]"
+      >
+        {headline3}
+      </h1>
+
+      <div class="text-center pt-7">
+        <SocialBar
+          instagram="https://instagram.com/deinprofil"
+          facebook="https://facebook.com/deineseite"
+          whatsapp="491701234567"
+          email="info@deinedomain.de"
+        />
+      </div>
+
+      <div class="mt-8 text-lg text-gray-600">
+        <slot />
+      </div>
+    </div>
+
+    <!-- Rechte Seite: 1/3 -->
+    <div class="lg:col-span-1">
+      <img
+        src={imageSrc}
+        alt={imageAlt}
+        class="aspect-4/5 w-full rounded-md object-cover"
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>

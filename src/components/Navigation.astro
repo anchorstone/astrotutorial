@@ -1,244 +1,166 @@
 ---
 // src/components/Navbar.astro
-
 interface Props {
-  logoSrc?: string;
-  logoAlt?: string;
-  siteName?: string;
-  tagline?: string;
+  brand?: string;
 }
 
-const {
-  logoSrc = "/logo50x50.png",
-  logoAlt = "Logo",
-  siteName = "markus-ankerstein.de",
-  tagline = "",
-} = Astro.props;
+const { brand = "markus-ankerstein.de" } = Astro.props;
 
-// Navigationslinks (rechts)
 const links = [
-  { label: "Start", href: "/" },
-  { label: "Blog", href: "/blog" },
-  { label: "Über mich", href: "/about" },
-  { label: "Tags", href: "/tags" },
+  { href: "/", label: "Start" },
+  { href: "/leistungen", label: "Leistungen" },
+  { href: "/projekte", label: "Projekte" },
+  { href: "/ueber-uns", label: "Über uns" },
+  { href: "/kontakt", label: "Kontakt", cta: true },
 ];
 
-// Social Icons (Mitte) – Links hier anpassen
-const socials = [
-  {
-    label: "Facebook",
-    href: "https://facebook.com/deinprofil",
-    icon: "facebook",
-    brand: "hover:bg-[#1877F2]/10 hover:text-[#1877F2] focus-visible:bg-[#1877F2]/10 focus-visible:text-[#1877F2]",
-    external: true,
-  },
-  {
-    label: "Instagram",
-    href: "https://instagram.com/deinprofil",
-    icon: "instagram",
-    brand: "hover:bg-[#E4405F]/10 hover:text-[#E4405F] focus-visible:bg-[#E4405F]/10 focus-visible:text-[#E4405F]",
-    external: true,
-  },
-  {
-    label: "WhatsApp",
-    href: "https://wa.me/491234567890", // Nummer im internationalen Format, ohne + und Leerzeichen
-    icon: "whatsapp",
-    brand: "hover:bg-[#25D366]/10 hover:text-[#25D366] focus-visible:bg-[#25D366]/10 focus-visible:text-[#25D366]",
-    external: true,
-  },
-  {
-    label: "E-Mail",
-    href: "mailto:info@example.com",
-    icon: "mail",
-    brand: "hover:bg-[#EA4335]/10 hover:text-[#EA4335] focus-visible:bg-[#EA4335]/10 focus-visible:text-[#EA4335]",
-    external: false,
-  },
-];
-
-const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
-const isActive = (href: string) => currentPath === (href.replace(/\/$/, "") || "/");
+const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) =>
+  href === "/"
+    ? pathname === "/"
+    : pathname === href || pathname.startsWith(`${href}/`);
 ---
 
-<header class="sticky top-0 z-50 border-b bg-slate-100 border-slate-200 backdrop-blur">
+<header
+  class="sticky top-0 z-50 border-b border-white/20 bg-zinc-700 shadow-lg shadow-black/10"
+>
   <nav
     aria-label="Hauptnavigation"
-    class="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-4 px-4 py-2 sm:px-6 lg:grid-cols-[1fr_auto_1fr] lg:px-14"
+    class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8"
   >
-    <!-- Links: Logo + Text -->
-    <a href="/" class="flex items-center gap-3 justify-self-start">
-      <img src={logoSrc} alt={logoAlt} class="h-8 w-8 shrink-0 object-contain" />
-      <span class="flex flex-col leading-tight">
-        <span class="text-[1.12rem] font-mono  font-normal text-slate-900">{siteName}</span>
-        <span class="text-xs text-slate-500">{tagline}</span>
-      </span>
+    <!-- Logo + Text (links) -->
+    <a
+      href="/"
+      class="group flex items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+    >
+      <img src="/logo_weiss_70x70.png" alt="" class="size-9 hover:-rotate-7" />
+      <span
+        class=" font-normal font-mono text-[1rem] tracking-tight text-white"
+        >{brand}</span
+      >
     </a>
 
-    <!-- Mitte: Social Icons (nur Desktop) -->
-    <ul class="hidden items-center gap-2 lg:flex">
+    <!-- Seitenlinks (rechts, Desktop) -->
+    <ul class="hidden items-center gap-1 md:flex">
       {
-        socials.map((s) => (
+        links.map((link) => (
           <li>
-            <a
-              href={s.href}
-              aria-label={s.label}
-              target={s.external ? "_blank" : undefined}
-              rel={s.external ? "noopener noreferrer" : undefined}
-              class:list={["flex h-10 w-10 items-center justify-center rounded-full text-slate-600 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900", s.brand]}
-            >
-              {s.icon === "facebook" && (
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                </svg>
-              )}
-              {s.icon === "instagram" && (
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </svg>
-              )}
-              {s.icon === "whatsapp" && (
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-                  <g transform="translate(6.5 5.5) scale(0.5)">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </g>
-                </svg>
-              )}
-              {s.icon === "mail" && (
-                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
-              )}
-            </a>
+            {link.cta ? (
+              <a
+                href={link.href}
+                class="ml-2 inline-flex items-center rounded-xl bg-zinc-100 px-4 py-2 text-sm uppercase font-mono font-normal text-zinc-900 transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                aria-current={isActive(link.href) ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            ) : (
+              <a
+                href={link.href}
+                aria-current={isActive(link.href) ? "page" : undefined}
+                class:list={[
+                  "rounded-lg px-4 py-2 text-sm tracking-widest uppercase font-normal font-mono transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+                  isActive(link.href)
+                    ? "bg-white/15 text-white"
+                    : "text-zinc-200 hover:bg-white/10 hover:text-white",
+                ]}
+              >
+                {link.label}
+              </a>
+            )}
           </li>
         ))
       }
     </ul>
 
-    <!-- Rechts: Links (nur Desktop) -->
-    <ul class="hidden items-center gap-1 justify-self-end lg:flex">
-      {
-        links.map((l) => (
-          <li>
-            <a
-              href={l.href}
-              aria-current={isActive(l.href) ? "page" : undefined}
-              class:list={[
-                "rounded-sm px-3 py-1 text-[1rem] uppercase tracking-[0.05rem] font-mono font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900",
-                isActive(l.href)
-                  ? "bg-blue-100 text-slate-900"
-                  : "text-slate-600 hover:bg-green-100/70 hover:text-slate-900",
-              ]}
-            >
-              {l.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-
-    <!-- Mobile: Menü-Button -->
+    <!-- Menü-Button (Mobil) -->
     <button
-      id="nav-toggle"
+      id="menu-toggle"
       type="button"
+      class="group relative grid size-10 place-items-center rounded-lg text-white transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:hidden"
       aria-expanded="false"
       aria-controls="mobile-menu"
       aria-label="Menü öffnen"
-      class="flex h-10 w-10 items-center justify-center justify-self-end rounded-md text-slate-700 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 lg:hidden"
     >
-      <svg id="icon-open" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <line x1="4" y1="7" x2="20" y2="7" />
-        <line x1="4" y1="12" x2="20" y2="12" />
-        <line x1="4" y1="17" x2="20" y2="17" />
-      </svg>
-      <svg id="icon-close" viewBox="0 0 24 24" class="hidden h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <line x1="6" y1="6" x2="18" y2="18" />
-        <line x1="18" y1="6" x2="6" y2="18" />
-      </svg>
+      <span class="sr-only">Menü</span>
+      <span
+        class="absolute h-0.5 w-5 -translate-y-1.5 rounded bg-current transition-transform duration-300 motion-reduce:transition-none group-aria-expanded:translate-y-0 group-aria-expanded:rotate-45"
+      ></span>
+      <span
+        class="absolute h-0.5 w-5 rounded bg-current transition-opacity duration-200 motion-reduce:transition-none group-aria-expanded:opacity-0"
+      ></span>
+      <span
+        class="absolute h-0.5 w-5 translate-y-1.5 rounded bg-current transition-transform duration-300 motion-reduce:transition-none group-aria-expanded:translate-y-0 group-aria-expanded:-rotate-45"
+      ></span>
     </button>
   </nav>
 
-  <!-- Mobile-Menü -->
-  <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white lg:hidden">
-    <ul class="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3 sm:px-6">
-      {
-        links.map((l) => (
-          <li>
-            <a
-              href={l.href}
-              aria-current={isActive(l.href) ? "page" : undefined}
-              class:list={[
-                "block rounded-md px-3 py-2 text-base font-medium",
-                isActive(l.href)
-                  ? "bg-slate-100 text-slate-900"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
-              ]}
-            >
-              {l.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-    <ul class="mx-auto flex max-w-7xl items-center gap-2 border-t border-slate-100 px-4 py-3 sm:px-6">
-      {
-        socials.map((s) => (
-          <li>
-            <a
-              href={s.href}
-              aria-label={s.label}
-              target={s.external ? "_blank" : undefined}
-              rel={s.external ? "noopener noreferrer" : undefined}
-              class:list={["flex h-10 w-10 items-center justify-center rounded-full text-slate-600 transition-colors", s.brand]}
-            >
-              {s.icon === "facebook" && (
-                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                </svg>
-              )}
-              {s.icon === "instagram" && (
-                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </svg>
-              )}
-              {s.icon === "whatsapp" && (
-                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-                  <g transform="translate(6.5 5.5) scale(0.5)">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </g>
-                </svg>
-              )}
-              {s.icon === "mail" && (
-                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
-              )}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+  <!-- Mobiles Menü -->
+  <div
+    id="mobile-menu"
+    data-open="false"
+    class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 motion-reduce:transition-none data-[open=true]:grid-rows-[1fr] md:hidden"
+  >
+    <div class="overflow-hidden" inert>
+      <ul
+        class="flex flex-col gap-1 border-t border-white/10 px-4 py-3 sm:px-6"
+      >
+        {
+          links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                aria-current={isActive(link.href) ? "page" : undefined}
+                class:list={[
+                  "block rounded-xl px-4 py-3 text-base font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+                  link.cta
+                    ? "mt-2 bg-zinc-100 text-center text-zinc-900 hover:bg-white"
+                    : isActive(link.href)
+                      ? "bg-white/15 text-white"
+                      : "text-zinc-200 hover:bg-white/10 hover:text-white",
+                ]}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </header>
 
 <script>
-  const toggle = document.getElementById("nav-toggle");
+  const toggle = document.getElementById("menu-toggle");
   const menu = document.getElementById("mobile-menu");
-  const iconOpen = document.getElementById("icon-open");
-  const iconClose = document.getElementById("icon-close");
+  const inner = menu?.firstElementChild as HTMLElement | null;
+
+  function setOpen(open: boolean) {
+    if (!toggle || !menu || !inner) return;
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Menü schließen" : "Menü öffnen");
+    menu.dataset.open = String(open);
+    inner.toggleAttribute("inert", !open);
+  }
 
   toggle?.addEventListener("click", () => {
-    const open = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!open));
-    toggle.setAttribute("aria-label", open ? "Menü öffnen" : "Menü schließen");
-    menu?.classList.toggle("hidden", open);
-    iconOpen?.classList.toggle("hidden", !open);
-    iconClose?.classList.toggle("hidden", open);
+    setOpen(toggle.getAttribute("aria-expanded") !== "true");
+  });
+
+  menu?.addEventListener("click", (e) => {
+    if ((e.target as HTMLElement).closest("a")) setOpen(false);
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (
+      e.key === "Escape" &&
+      toggle?.getAttribute("aria-expanded") === "true"
+    ) {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+
+  window.matchMedia("(min-width: 768px)").addEventListener("change", (e) => {
+    if (e.matches) setOpen(false);
   });
 </script>
